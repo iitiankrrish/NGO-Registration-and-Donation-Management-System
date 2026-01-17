@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiCheck, FiX } from 'react-icons/fi';
 import { donationAPI } from '../services/api';
 
 const Donate = () => {
@@ -149,14 +150,14 @@ const Donate = () => {
             onClick={() => handlePayment(true)}
             disabled={loading}
           >
-            {loading ? <span className="loading-spinner"></span> : <>Simulate Success</>}
+            {loading ? <span className="loading-spinner"></span> : <><FiCheck /> Success</>}
           </button>
           <button
             className="btn btn-danger"
             onClick={() => handlePayment(false)}
             disabled={loading}
           >
-            {loading ? <span className="loading-spinner"></span> : <>Simulate Failure</>}
+            {loading ? <span className="loading-spinner"></span> : <><FiX /> Failure</>}
           </button>
         </div>
       </div>

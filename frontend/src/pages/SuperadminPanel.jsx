@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { FiDownload, FiCheck } from 'react-icons/fi';
 import { adminAPI } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -257,7 +258,7 @@ const SuperadminPanel = () => {
                   <td>{formatDate(admin.registeredAt)}</td>
                   <td>
                     <button className="btn btn-primary btn-sm" onClick={() => handleApprove(admin._id)}>
-                      Approve
+                      <FiCheck /> Approve
                     </button>
                   </td>
                 </tr>
@@ -285,7 +286,7 @@ const SuperadminPanel = () => {
           </button>
         </div>
         <button className="btn btn-secondary" onClick={handleExport}>
-          Export CSV
+          <FiDownload /> Export CSV
         </button>
       </div>
 

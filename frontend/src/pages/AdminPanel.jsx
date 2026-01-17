@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiDownload } from 'react-icons/fi';
 import { adminAPI } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -239,7 +240,7 @@ const AdminPanel = () => {
           </button>
         </div>
         <button className="btn btn-secondary" onClick={handleExport}>
-          Export CSV
+          <FiDownload /> Export CSV
         </button>
       </div>
 

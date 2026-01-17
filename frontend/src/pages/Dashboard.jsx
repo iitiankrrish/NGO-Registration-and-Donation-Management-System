@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { donationAPI } from '../services/api';
 
@@ -40,11 +41,11 @@ const Dashboard = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'success':
-        return <span className="status-icon success">✓</span>;
+        return <FiCheckCircle className="status-icon success" />;
       case 'pending':
-        return <span className="status-icon pending">⏳</span>;
+        return <FiClock className="status-icon pending" />;
       case 'failed':
-        return <span className="status-icon failed">✗</span>;
+        return <FiXCircle className="status-icon failed" />;
       default:
         return null;
     }
@@ -142,7 +143,7 @@ const Dashboard = () => {
                 <div className="profile-row">
                   <div>
                     <span className="profile-label">Account Role</span>
-                    <span className="profile-value role-tag">{user?.role || 'supporter'}</span>
+                    <span className="profile-value bg-transparent text-white">{user?.role || 'supporter'}</span>
                   </div>
                 </div>
               </div>
