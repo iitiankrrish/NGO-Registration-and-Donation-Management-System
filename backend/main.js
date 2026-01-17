@@ -11,7 +11,6 @@ const app = express();
 
 initiateDb();
 
-// CORS configuration for production
 const allowedOrigins = process.env.CORS_ORIGIN 
     ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
     : ['http://localhost:5173', 'http://localhost:5174'];
@@ -19,7 +18,6 @@ const allowedOrigins = process.env.CORS_ORIGIN
 app.use(
     cors({
         origin: function (origin, callback) {
-            // Allow requests with no origin (mobile apps, curl, etc.)
             if (!origin) return callback(null, true);
             if (allowedOrigins.includes(origin)) {
                 callback(null, true);
@@ -32,7 +30,6 @@ app.use(
     })
 );
 
-// Trust proxy for secure cookies behind reverse proxy (Render, Heroku, etc.)
 app.set('trust proxy', 1);
 
 app.use(express.json());
