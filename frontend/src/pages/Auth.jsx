@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMail, FiLock, FiUser, FiLogIn, FiUserPlus, FiShield } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 
 const Auth = () => {
@@ -35,7 +34,9 @@ const Auth = () => {
         officialEmail: formData.officialEmail,
         passCode: formData.passCode,
       });
-      if (response.role === 'admin') {
+      if (response.role === 'superadmin') {
+        navigate('/superadmin');
+      } else if (response.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/dashboard');
@@ -91,9 +92,9 @@ const Auth = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <div className="auth-logo">🏛️</div>
+            <div className="auth-logo"></div>
             <h1>{mode === 'login' ? 'Sign In' : 'Register'}</h1>
-            <p>NSS IITR Registration Portal</p>
+            <p>NGO Registration Portal</p>
           </div>
 
           <div className="tab-switcher">
@@ -101,13 +102,13 @@ const Auth = () => {
               className={mode === 'login' ? 'tab active' : 'tab'}
               onClick={() => setMode('login')}
             >
-              <FiLogIn /> Login
+               Login
             </button>
             <button
               className={mode === 'signup' ? 'tab active' : 'tab'}
               onClick={() => setMode('signup')}
             >
-              <FiUserPlus /> Register
+               Register
             </button>
           </div>
 
@@ -118,7 +119,7 @@ const Auth = () => {
             {mode === 'signup' && (
               <div className="form-group">
                 <label htmlFor="fullName">
-                  <FiUser /> Full Name
+                   Full Name
                 </label>
                 <input
                   type="text"
@@ -134,7 +135,7 @@ const Auth = () => {
 
             <div className="form-group">
               <label htmlFor="officialEmail">
-                <FiMail /> Email Address
+                 Email Address
               </label>
               <input
                 type="email"
@@ -149,7 +150,7 @@ const Auth = () => {
 
             <div className="form-group">
               <label htmlFor="passCode">
-                <FiLock /> Password
+                 Password
               </label>
               <input
                 type="password"
@@ -166,7 +167,7 @@ const Auth = () => {
               <>
                 <div className="form-group">
                   <label htmlFor="confirmPassword">
-                    <FiLock /> Confirm Password
+                     Confirm Password
                   </label>
                   <input
                     type="password"
@@ -180,7 +181,7 @@ const Auth = () => {
                 </div>
                 <div className="form-group">
                   <label htmlFor="userRole">
-                    <FiShield /> Account Role
+                     Account Role
                   </label>
                   <select
                     id="userRole"
@@ -191,7 +192,7 @@ const Auth = () => {
                     <option value="supporter">Supporter</option>
                     <option value="admin">Admin</option>
                   </select>
-                  <p className="helper-text">Admins can access admin dashboard; supporters can donate.</p>
+                  
                 </div>
               </>
             )}
@@ -200,13 +201,9 @@ const Auth = () => {
               {loading ? (
                 <span className="loading-spinner"></span>
               ) : mode === 'login' ? (
-                <>
-                  <FiLogIn /> Login
-                </>
+                ' Login'
               ) : (
-                <>
-                  <FiUserPlus /> Register
-                </>
+                ' Register'
               )}
             </button>
           </form>
@@ -214,13 +211,9 @@ const Auth = () => {
 
         <div className="auth-illustration">
           <div className="illustration-content">
-          <h2>NSS IITR Portal</h2>
+          <h2>NGO Portal</h2>
           <p>Registration and Donation Management System</p>
-          <div className="illustration-icons">
-            <span>🏛️</span>
-            <span>📊</span>
-            <span>💳</span>
-          </div>
+          
         </div>
         </div>
       </div>

@@ -26,6 +26,8 @@ exports.handleSignup = async (req, res) => {
             officialEmail,
             secretHash: hashed,
             userRole: userRole || 'supporter',
+            // admin registrations require superadmin approval
+            isApproved: userRole === 'admin' ? false : true,
         });
 
         await newMember.save();
@@ -66,6 +68,10 @@ exports.handleLogin = async (req, res) => {
         });
 
         if (foundUser && (await bcrypt.compare(passCode, foundUser.secretHash))) {
+            // prevent unapproved admins from logging in
+            if (foundUser.userRole === 'admin' && !foundUser.isApproved) {
+                return res.status(403).json({ msg: 'Admin account pending approval by superadmin' });
+            }
             const token = jwt.sign(
                 { uid: foundUser._id, role: foundUser.userRole },
                 process.env.SECRET_KEY,
@@ -122,7 +128,15 @@ exports.getProfileDetails = async (req, res) => {
             userId: req.user.uid,
         });
 
-        res.json(profile);
+        // normalize returned profile shape
+        res.json({
+            _id: profile._id,
+            fullName: profile.fullName,
+            officialEmail: profile.officialEmail,
+            userRole: profile.userRole,
+            isApproved: profile.isApproved,
+            registeredAt: profile.registeredAt,
+        });
     } catch (error) {
         console.error('[PROFILE] Profile retrieval failed', {
             userId: req.user?.uid,

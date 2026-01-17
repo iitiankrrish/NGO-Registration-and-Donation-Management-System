@@ -32,6 +32,9 @@ export const adminAPI = {
   exportReport: () => api.get('/admin-portal/export', { responseType: 'blob' }),
   getInsights: () => api.get('/admin-portal/insights'),
   getAllDonations: () => api.get('/admin-portal/all-donations'),
+  getPendingAdmins: () => api.get('/admin-portal/pending-admins'),
+  approveAdmin: (adminId) => api.post('/admin-portal/approve-admin', { adminId }),
+  exportDonorTotals: () => api.get('/admin-portal/export-donations', { responseType: 'blob' }),
 };
 
 export default api;

@@ -21,10 +21,14 @@ const memberSchema = new mongoose.Schema({
     userRole: {
         type: String,
         enum: {
-            values: ['supporter', 'admin'],
+            values: ['supporter', 'admin', 'superadmin'],
             message: '{VALUE} is not a valid role',
         },
         default: 'supporter',
+    },
+    isApproved: {
+        type: Boolean,
+        default: true,
     },
     registeredAt: {
         type: Date,

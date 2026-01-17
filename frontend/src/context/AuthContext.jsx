@@ -14,7 +14,13 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const response = await authAPI.getProfile();
-      setUser(response.data);
+      // Map backend fields to frontend user object
+      setUser({
+        name: response.data.fullName,
+        email: response.data.officialEmail,
+        role: response.data.userRole,
+        registeredAt: response.data.registeredAt,
+      });
     } catch (error) {
       setUser(null);
     } finally {
@@ -26,6 +32,7 @@ export const AuthProvider = ({ children }) => {
     const response = await authAPI.login(credentials);
     setUser({
       name: response.data.name,
+      email: credentials.officialEmail,
       role: response.data.role,
     });
     return response.data;
@@ -53,7 +60,8 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
+    isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
+    isSuperadmin: user?.role === 'superadmin',
   };
 
   return (

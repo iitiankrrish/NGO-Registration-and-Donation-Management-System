@@ -1,5 +1,5 @@
 /* ===========================
-   NSS "Secure Ledger" Theme
+   NGO Portal Theme
    Trust, Security, Clarity
    =========================== */
 
@@ -117,22 +117,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===========================
-   App Layout with Sidebar
+   App Layout (no sidebar)
    =========================== */
 .app {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 220px;
-  min-height: 100vh;
+  padding-top: 60px; /* navbar height */
 }
 
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 0;
     padding-top: 56px;
   }
 }
@@ -144,34 +143,34 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ===========================
-   Sidebar Navigation (Dark Navy)
+   Top Navbar
    =========================== */
 .navbar {
   position: fixed;
-  left: 0;
   top: 0;
-  bottom: 0;
-  width: 220px;
+  left: 0;
+  right: 0;
+  height: 60px;
   background: var(--bg-sidebar);
   z-index: 1000;
   display: flex;
-  flex-direction: column;
-  padding: 20px 0;
+  align-items: center;
 }
 
 .nav-container {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  margin-bottom: 32px;
   color: var(--text-inverse);
 }
 
@@ -186,64 +185,62 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-inverse);
 }
 
-.nav-toggle {
-  display: none;
-  background: none;
-  font-size: 1.25rem;
-  color: var(--text-inverse);
-}
-
-.nav-menu {
+.nav-right {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  align-items: center;
+  gap: 16px;
 }
 
 .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.8);
   font-size: var(--text-sm);
   font-weight: 500;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .nav-link:hover {
   color: var(--text-inverse);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.nav-link.donate-link {
-  background: var(--gold-accent);
-  color: var(--navy-dark);
-  margin-top: 8px;
-}
-
-.nav-link.donate-link:hover {
-  background: #D4AF37;
-}
-
-.nav-link.admin-link {
-  color: var(--gold-accent);
-}
-
-.nav-user {
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .user-greeting {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: var(--text-xs);
+  gap: 6px;
+  color: rgba(255,255,255,0.8);
+  font-size: var(--text-sm);
+}
+
+/* ===========================
+   Floating Action Buttons
+   =========================== */
+.floating-actions {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1100;
+}
+
+.fab {
+  padding: 10px 18px;
+  border-radius: 24px;
+  background: var(--navy-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+}
+
+.fab:hover {
+  background: var(--navy-light);
+  transform: scale(1.05);
 }
 
 .nav-btn {

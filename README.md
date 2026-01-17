@@ -1,166 +1,163 @@
-# 🏛️ NSS IITR - Registration & Donation Portal
+# NGO Registration and Donation Management System
 
-Full-stack web application for member registration and donation management for the National Service Scheme (NSS) unit at IIT Roorkee.
-
-## Tech Stack
-
-### Frontend
-| Component | Technology |
-|-----------|------------|
-| Framework | React 18 + Vite |
-| Routing | React Router v6 |
-| HTTP | Axios |
-| Charts | Recharts |
-| Styling | Custom CSS |
-
-### Backend
-| Component | Technology |
-|-----------|------------|
-| Runtime | Node.js 20.x |
-| Framework | Express 5.x |
-| Database | MongoDB + Mongoose |
-| Auth | JWT (HttpOnly Cookies) |
-| Encryption | bcryptjs |
+A full-stack web application for managing NGO member registration and donations.
 
 ## Features
 
-- **Auth** - Single page login/register with role selection (admin/supporter)
-- **Dashboard** - User profile view and donation history
-- **Donate** - Payment flow with sandbox simulation
-- **Admin Panel** - Statistics, member management, CSV export, charts
+- User registration and login (supporter, admin, superadmin roles)
+- Admin accounts require superadmin approval before login
+- Dashboard with donation history
+- Donate page with sandbox payment simulation
+- Admin panel with statistics, charts, member list, donation list, CSV export
+- Superadmin panel for approving admin registrations
+- Filtering by donation status
+- Export donor totals as CSV
+- Floating action buttons (Home, Donate, Logout)
 
-## Quick Start
+## Tech Stack
 
-### Prerequisites
-- Node.js 20+
-- MongoDB Atlas account (or local MongoDB)
+- Frontend: React 18, Vite, React Router, Axios, Recharts
+- Backend: Node.js, Express, Mongoose
+- Database: MongoDB
 
-### Backend Setup
+## Prerequisites
+
+- Node.js 18+
+- MongoDB (local or Atlas)
+
+## Installation
+
+### Backend
+
 ```bash
 cd backend
 npm install
+```
 
-# Create .env file
-echo "PORT=5000" > .env
-echo "MONGO_URI=your_mongodb_connection_string" >> .env
-echo "JWT_SECRET=your_secret_key" >> .env
+Create `backend/.env`:
 
+```
+PORT=5000
+CONNECTION_URI=mongodb://localhost:27017/ngo_portal
+SECRET_KEY=your_jwt_secret
+CORS_ORIGIN=http://localhost:5173
+SUPERADMIN_EMAIL=superadmin@example.com
+SUPERADMIN_PASSWORD=SuperAdmin123!
+```
+
+Start backend:
+
+```bash
 npm start
 ```
-Runs on `http://localhost:5000`
 
-### Frontend Setup
+### Frontend
+
 ```bash
 cd frontend
 npm install
+```
+
+Create `frontend/.env`:
+
+```
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+Start frontend:
+
+```bash
 npm run dev
 ```
-Runs on `http://localhost:5173`
+
+## Default Superadmin Credentials
+
+```
+Email:    superadmin@example.com
+Password: SuperAdmin123!
+```
+
+Use these credentials to log in as superadmin and approve admin accounts.
 
 ## Project Structure
 
 ```
-├── backend/
-│   ├── main.js                 # Entry point
-│   ├── src/
-│   │   ├── config/
-│   │   │   └── database.js     # MongoDB connection
-│   │   ├── endpoints/
-│   │   │   ├── authRoutes.js   # /api/auth/*
-│   │   │   ├── payRoutes.js    # /api/pay/*
-│   │   │   └── adminRoutes.js  # /api/admin/*
-│   │   ├── logic/
-│   │   │   ├── authManager.js
-│   │   │   ├── payManager.js
-│   │   │   └── adminManager.js
-│   │   ├── protection/
-│   │   │   └── gatekeeper.js   # JWT middleware
-│   │   └── structures/
-│   │       ├── Member.js
-│   │       ├── Donation.js
-│   │       └── AuditLog.js
-│   └── package.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   └── ProtectedRoute.jsx
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   ├── pages/
-│   │   │   ├── Auth.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Donate.jsx
-│   │   │   └── AdminPanel.jsx
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── styles/
-│   │   │   └── index.css
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   └── package.json
+backend/
+  main.js
+  src/
+    config/database.js
+    endpoints/
+      authRoutes.js
+      adminRoutes.js
+      payRoutes.js
+    logic/
+      authManager.js
+      adminManager.js
+      payManager.js
+    protection/gatekeeper.js
+    structures/
+      Member.js
+      Donation.js
+      AuditLog.js
 
-
+frontend/
+  src/
+    App.jsx
+    main.jsx
+    components/
+      Navbar.jsx
+      ProtectedRoute.jsx
+    context/AuthContext.jsx
+    pages/
+      Auth.jsx
+      Dashboard.jsx
+      Donate.jsx
+      AdminPanel.jsx
+      SuperadminPanel.jsx
+    services/api.js
+    styles/index.css
 ```
 
 ## API Endpoints
 
-### Auth Routes `/api/auth`
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/register` | Create new account |
-| POST | `/login` | Login & get JWT |
-| POST | `/logout` | Clear auth cookie |
-| GET | `/verify` | Verify session |
+### Auth
 
-### Payment Routes `/api/pay`
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/initiate` | Create donation |
-| POST | `/verify` | Verify payment |
-| GET | `/history` | User donations |
+- POST /auth/signup - Register
+- POST /auth/signin - Login
+- POST /auth/logout - Logout
+- GET /auth/me - Get profile
 
-### Admin Routes `/api/admin`
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/stats` | Dashboard stats |
-| GET | `/members` | List all members |
-| GET | `/donations` | All donations |
-| PATCH | `/members/:id` | Update role |
+### Finance
+
+- POST /finance/create-order - Create donation order
+- POST /finance/update-status - Update payment status
+- GET /finance/my-donations - User's donations
+
+### Admin
+
+- GET /admin-portal/stats - Dashboard stats
+- GET /admin-portal/users - List supporters
+- GET /admin-portal/all-donations - All donations
+- GET /admin-portal/insights - Daily donation insights
+- GET /admin-portal/export - Export members CSV
+- GET /admin-portal/export-donations - Export donor totals CSV
+- GET /admin-portal/pending-admins - Pending admin approvals (superadmin)
+- POST /admin-portal/approve-admin - Approve admin (superadmin)
 
 ## Frontend Routes
 
-| Route | Page | Access |
-|-------|------|--------|
-| `/` | Auth | Public |
-| `/dashboard` | Dashboard | Authenticated |
-| `/donate` | Donate | Authenticated |
-| `/admin` | Admin Panel | Admin only |
+- / - Auth page (login/register)
+- /dashboard - User dashboard
+- /donate - Donation page
+- /admin - Admin panel
+- /superadmin - Superadmin panel
 
-## Theme
+## Project Report
 
-| Element | Color |
-|---------|-------|
-| Primary | Navy Blue `#002366` |
-| Accent | Gold `#C5A065` |
-| Success | Green `#2E7D32` |
-| Pending | Orange `#F57C00` |
-| Failed | Red `#D32F2F` |
+See `docs/PROJECT_REPORT.txt` for detailed system architecture, database schema, flow diagrams, and design decisions.
 
-## Environment Variables
+## License
 
-### Backend `.env`
-```
-PORT=5000
-MONGO_URI=mongodb+srv://...
-JWT_SECRET=your-secret-key
-NODE_ENV=development
-```
-
-### Frontend `.env`
-```
-VITE_API_URL=http://localhost:5000/api
-```
+MIT
 
 

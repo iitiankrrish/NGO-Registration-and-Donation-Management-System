@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiUsers, FiDollarSign, FiDownload, FiSearch, FiTrendingUp, FiCalendar, FiHeart } from 'react-icons/fi';
+import { FiUsers, FiDollarSign, FiDownload, FiSearch, FiTrendingUp, FiCalendar, FiCheck, FiUserPlus } from 'react-icons/fi';
 import { adminAPI } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
-const AdminPanel = () => {
-  const navigate = useNavigate();
+const SuperadminPanel = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [stats, setStats] = useState({ totalRegistrations: 0, totalCollected: 0 });
   const [users, setUsers] = useState([]);
   const [donations, setDonations] = useState([]);
   const [insights, setInsights] = useState([]);
+  const [pendingAdmins, setPendingAdmins] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterRole, setFilterRole] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -22,20 +22,31 @@ const AdminPanel = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [statsRes, usersRes, donationsRes, insightsRes] = await Promise.all([
+      const [statsRes, usersRes, donationsRes, insightsRes, pendingRes] = await Promise.all([
         adminAPI.getStats(),
         adminAPI.getUsers(),
         adminAPI.getAllDonations(),
         adminAPI.getInsights(),
+        adminAPI.getPendingAdmins(),
       ]);
       setStats(statsRes.data);
       setUsers(usersRes.data);
       setDonations(donationsRes.data);
       setInsights(insightsRes.data);
+      setPendingAdmins(pendingRes.data);
     } catch (error) {
-      console.error('Error fetching admin data:', error);
+      console.error('Error fetching superadmin data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApprove = async (adminId) => {
+    try {
+      await adminAPI.approveAdmin(adminId);
+      setPendingAdmins((prev) => prev.filter((a) => a._id !== adminId));
+    } catch (error) {
+      console.error('Error approving admin:', error);
     }
   };
 
@@ -100,11 +111,17 @@ const AdminPanel = () => {
   };
 
   // Process insights data for charts
-  const chartData = insights.map(item => ({
+  const chartData = insights.map((item) => ({
     date: item._id,
     amount: item.dailyTotal,
     transactions: item.transactionCount,
   }));
+
+  // Filter donations
+  const filteredDonations = donations.filter((d) => {
+    if (filterStatus && d.paymentStatus !== filterStatus) return false;
+    return true;
+  });
 
   const renderOverview = () => (
     <div className="admin-overview">
@@ -132,7 +149,7 @@ const AdminPanel = () => {
           <div className="stat-content">
             <FiTrendingUp className="stat-icon" />
             <div>
-              <h3>{donations.filter(d => d.paymentStatus === 'failed').length}</h3>
+              <h3>{donations.filter((d) => d.paymentStatus === 'failed').length}</h3>
               <p>Failed Transactions</p>
             </div>
           </div>
@@ -158,21 +175,15 @@ const AdminPanel = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E8" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#FFF', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#FFF',
                     border: '1px solid #002366',
                     borderRadius: '4px',
-                    fontSize: '12px'
-                  }} 
+                    fontSize: '12px',
+                  }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="amount" 
-                  stroke="#002366" 
-                  strokeWidth={2}
-                  dot={{ fill: '#002366' }}
-                />
+                <Line type="monotone" dataKey="amount" stroke="#002366" strokeWidth={2} dot={{ fill: '#002366' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -183,13 +194,13 @@ const AdminPanel = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E8" />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#FFF', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#FFF',
                     border: '1px solid #C5A065',
                     borderRadius: '4px',
-                    fontSize: '12px'
-                  }} 
+                    fontSize: '12px',
+                  }}
                 />
                 <Bar dataKey="transactions" fill="#C5A065" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -204,23 +215,58 @@ const AdminPanel = () => {
         <div className="activity-list">
           {donations.slice(0, 5).map((donation) => (
             <div key={donation._id} className="activity-item">
-              <div className="activity-avatar">
-                {donation.donatedBy?.fullName?.charAt(0) || 'A'}
-              </div>
+              <div className="activity-avatar">{donation.donatedBy?.fullName?.charAt(0) || 'A'}</div>
               <div className="activity-details">
                 <p className="activity-name">{donation.donatedBy?.fullName || 'Anonymous'}</p>
                 <p className="activity-email">{donation.donatedBy?.officialEmail || 'N/A'}</p>
               </div>
-              <div className="activity-amount">
-                ₹{donation.amountPaid?.toLocaleString()}
-              </div>
-              <div className="activity-status">
-                {getStatusBadge(donation.paymentStatus)}
-              </div>
+              <div className="activity-amount">₹{donation.amountPaid?.toLocaleString()}</div>
+              <div className="activity-status">{getStatusBadge(donation.paymentStatus)}</div>
             </div>
           ))}
         </div>
       </div>
+    </div>
+  );
+
+  const renderPendingAdmins = () => (
+    <div className="admin-users">
+      <h3>Pending Admin Approvals</h3>
+      {pendingAdmins.length === 0 ? (
+        <p style={{ padding: '1rem' }}>No pending admin requests.</p>
+      ) : (
+        <div className="users-table-container">
+          <table className="users-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Registered</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingAdmins.map((admin) => (
+                <tr key={admin._id}>
+                  <td>
+                    <div className="user-cell">
+                      <div className="user-avatar">{admin.fullName?.charAt(0)}</div>
+                      {admin.fullName}
+                    </div>
+                  </td>
+                  <td>{admin.officialEmail}</td>
+                  <td>{formatDate(admin.registeredAt)}</td>
+                  <td>
+                    <button className="btn btn-primary btn-sm" onClick={() => handleApprove(admin._id)}>
+                      <FiCheck /> Approve
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 
@@ -266,9 +312,7 @@ const AdminPanel = () => {
                 </td>
                 <td>{user.officialEmail}</td>
                 <td>
-                  <span className={`role-badge ${user.userRole}`}>
-                    {user.userRole}
-                  </span>
+                  <span className={`role-badge ${user.userRole}`}>{user.userRole}</span>
                 </td>
                 <td>{formatDate(user.registeredAt)}</td>
               </tr>
@@ -278,12 +322,6 @@ const AdminPanel = () => {
       </div>
     </div>
   );
-
-  // Filter donations by status
-  const filteredDonations = donations.filter((d) => {
-    if (filterStatus && d.paymentStatus !== filterStatus) return false;
-    return true;
-  });
 
   const renderDonations = () => (
     <div className="admin-donations">
@@ -321,8 +359,8 @@ const AdminPanel = () => {
                 <td>
                   <div className="donor-info">
                     <span className="donor-name">{donation.donatedBy?.fullName || 'Anonymous'}</span>
-                    <br/>
-                    <span className="donor-email">{ donation.donatedBy?.officialEmail || 'N/A'}</span>
+                    <br />
+                    <span className="donor-email">{donation.donatedBy?.officialEmail || 'N/A'}</span>
                   </div>
                 </td>
                 <td>
@@ -342,7 +380,7 @@ const AdminPanel = () => {
     return (
       <div className="admin-loading">
         <div className="loading-spinner large"></div>
-        <p>Loading admin panel...</p>
+        <p>Loading superadmin panel...</p>
       </div>
     );
   }
@@ -351,31 +389,22 @@ const AdminPanel = () => {
     <div className="admin-panel">
       <div className="container">
         <div className="admin-header">
-          <h1>Admin Dashboard</h1>
-          <p>Manage supporters, donations, and view analytics</p>
-          <button className="btn btn-primary" style={{ marginTop: '0.5rem' }} onClick={() => navigate('/donate')}>
-            <FiHeart /> Donate Now
-          </button>
+          <h1>Superadmin Dashboard</h1>
+          <p>Manage admins, supporters, donations, and view analytics</p>
         </div>
 
         {/* Tabs */}
         <div className="admin-tabs">
-          <button
-            className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
+          <button className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
             Overview
           </button>
-          <button
-            className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => setActiveTab('users')}
-          >
+          <button className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`} onClick={() => setActiveTab('pending')}>
+            <FiUserPlus style={{ marginRight: 4 }} /> Pending Admins ({pendingAdmins.length})
+          </button>
+          <button className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
             Supporters
           </button>
-          <button
-            className={`tab-btn ${activeTab === 'donations' ? 'active' : ''}`}
-            onClick={() => setActiveTab('donations')}
-          >
+          <button className={`tab-btn ${activeTab === 'donations' ? 'active' : ''}`} onClick={() => setActiveTab('donations')}>
             Donations
           </button>
         </div>
@@ -383,6 +412,7 @@ const AdminPanel = () => {
         {/* Tab Content */}
         <div className="admin-content">
           {activeTab === 'overview' && renderOverview()}
+          {activeTab === 'pending' && renderPendingAdmins()}
           {activeTab === 'users' && renderUsers()}
           {activeTab === 'donations' && renderDonations()}
         </div>
@@ -391,4 +421,4 @@ const AdminPanel = () => {
   );
 };
 
-export default AdminPanel;
+export default SuperadminPanel;
