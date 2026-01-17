@@ -156,8 +156,5 @@ frontend/
 
 See `docs/PROJECT_REPORT.txt` for detailed system architecture, database schema, flow diagrams, and design decisions.
 
-## License
-
-MIT
 
 
