@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { FiUsers, FiDollarSign, FiDownload, FiSearch, FiTrendingUp, FiCalendar, FiCheck, FiUserPlus } from 'react-icons/fi';
 import { adminAPI } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -129,7 +128,7 @@ const SuperadminPanel = () => {
       <div className="admin-stats-grid">
         <div className="admin-stat-card purple">
           <div className="stat-content">
-            <FiUsers className="stat-icon" />
+            <div className="stat-icon"></div>
             <div>
               <h3>{stats.totalRegistrations}</h3>
               <p>Total Supporters</p>
@@ -138,7 +137,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card green">
           <div className="stat-content">
-            <FiDollarSign className="stat-icon" />
+            <div className="stat-icon"></div>
             <div>
               <h3>₹{stats.totalCollected?.toLocaleString()}</h3>
               <p>Total Funds Raised</p>
@@ -147,7 +146,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card pink">
           <div className="stat-content">
-            <FiTrendingUp className="stat-icon" />
+            <div className="stat-icon"></div>
             <div>
               <h3>{donations.filter((d) => d.paymentStatus === 'failed').length}</h3>
               <p>Failed Transactions</p>
@@ -156,7 +155,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card mint">
           <div className="stat-content">
-            <FiCalendar className="stat-icon" />
+            <div className="stat-icon"></div>
             <div>
               <h3>{insights.length}</h3>
               <p>Active Days</p>
@@ -258,7 +257,7 @@ const SuperadminPanel = () => {
                   <td>{formatDate(admin.registeredAt)}</td>
                   <td>
                     <button className="btn btn-primary btn-sm" onClick={() => handleApprove(admin._id)}>
-                      <FiCheck /> Approve
+                      Approve
                     </button>
                   </td>
                 </tr>
@@ -274,7 +273,6 @@ const SuperadminPanel = () => {
     <div className="admin-users">
       <div className="users-header">
         <div className="search-box">
-          <FiSearch />
           <input
             type="text"
             placeholder="Search by name..."
@@ -287,7 +285,7 @@ const SuperadminPanel = () => {
           </button>
         </div>
         <button className="btn btn-secondary" onClick={handleExport}>
-          <FiDownload /> Export CSV
+          Export CSV
         </button>
       </div>
 
@@ -336,7 +334,7 @@ const SuperadminPanel = () => {
           </select>
         </div>
         <button className="btn btn-secondary" onClick={handleExportDonorTotals}>
-          <FiDownload /> Export Donor Totals CSV
+          Export Donor Totals CSV
         </button>
       </div>
       <div className="donations-table-container">
@@ -399,7 +397,7 @@ const SuperadminPanel = () => {
             Overview
           </button>
           <button className={`tab-btn ${activeTab === 'pending' ? 'active' : ''}`} onClick={() => setActiveTab('pending')}>
-            <FiUserPlus style={{ marginRight: 4 }} /> Pending Admins ({pendingAdmins.length})
+            Pending Admins ({pendingAdmins.length})
           </button>
           <button className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
             Supporters

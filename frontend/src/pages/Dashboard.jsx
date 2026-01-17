@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiHeart, FiCalendar, FiDollarSign, FiCheckCircle, FiClock, FiXCircle, FiUser, FiMail, FiShield } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { donationAPI } from '../services/api';
 
@@ -24,7 +23,7 @@ const Dashboard = () => {
       const response = await donationAPI.getMyDonations();
       setDonations(response.data);
       
-      // Calculate stats
+     
       const successDonations = response.data.filter(d => d.paymentStatus === 'success');
       setStats({
         totalDonated: successDonations.reduce((sum, d) => sum + d.amountPaid, 0),
@@ -41,11 +40,11 @@ const Dashboard = () => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'success':
-        return <FiCheckCircle className="status-icon success" />;
+        return <span className="status-icon success">✓</span>;
       case 'pending':
-        return <FiClock className="status-icon pending" />;
+        return <span className="status-icon pending">⏳</span>;
       case 'failed':
-        return <FiXCircle className="status-icon failed" />;
+        return <span className="status-icon failed">✗</span>;
       default:
         return null;
     }
@@ -71,7 +70,7 @@ const Dashboard = () => {
             <p>Your registration and donation records.</p>
           </div>
           <Link to="/donate" className="btn btn-primary">
-            <FiHeart /> Make a Donation
+            Make a Donation
           </Link>
         </div>
 
@@ -79,7 +78,6 @@ const Dashboard = () => {
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon purple">
-              <FiDollarSign />
             </div>
             <div className="stat-info">
               <h3>₹{stats.totalDonated.toLocaleString()}</h3>
@@ -88,7 +86,6 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <div className="stat-icon pink">
-              <FiHeart />
             </div>
             <div className="stat-info">
               <h3>{stats.successCount}</h3>
@@ -97,7 +94,6 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <div className="stat-icon mint">
-              <FiCalendar />
             </div>
             <div className="stat-info">
               <h3>{stats.totalCount}</h3>
@@ -112,13 +108,13 @@ const Dashboard = () => {
             className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
-            <FiUser /> Profile
+            Profile
           </button>
           <button
             className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
             onClick={() => setActiveTab('history')}
           >
-            <FiHeart /> Donation History
+            Donation History
           </button>
         </div>
 
@@ -132,21 +128,18 @@ const Dashboard = () => {
               </div>
               <div className="profile-details">
                 <div className="profile-row">
-                  <FiUser className="profile-icon" />
                   <div>
                     <span className="profile-label">Full Name</span>
                     <span className="profile-value">{user?.name || 'N/A'}</span>
                   </div>
                 </div>
                 <div className="profile-row">
-                  <FiMail className="profile-icon" />
                   <div>
                     <span className="profile-label">Email Address</span>
                     <span className="profile-value">{user?.email || 'N/A'}</span>
                   </div>
                 </div>
                 <div className="profile-row">
-                  <FiShield className="profile-icon" />
                   <div>
                     <span className="profile-label">Account Role</span>
                     <span className="profile-value role-tag">{user?.role || 'supporter'}</span>
