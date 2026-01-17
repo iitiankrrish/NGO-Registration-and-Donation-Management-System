@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiDownload, FiCheck } from 'react-icons/fi';
+import { FiDownload, FiCheck, FiUsers, FiDollarSign, FiXCircle, FiCalendar } from 'react-icons/fi';
 import { adminAPI } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -129,7 +129,7 @@ const SuperadminPanel = () => {
       <div className="admin-stats-grid">
         <div className="admin-stat-card purple">
           <div className="stat-content">
-            <div className="stat-icon"></div>
+            <FiUsers className="stat-icon" />
             <div>
               <h3>{stats.totalRegistrations}</h3>
               <p>Total Supporters</p>
@@ -138,7 +138,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card green">
           <div className="stat-content">
-            <div className="stat-icon"></div>
+            <FiDollarSign className="stat-icon" />
             <div>
               <h3>₹{stats.totalCollected?.toLocaleString()}</h3>
               <p>Total Funds Raised</p>
@@ -147,7 +147,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card pink">
           <div className="stat-content">
-            <div className="stat-icon"></div>
+            <FiXCircle className="stat-icon" />
             <div>
               <h3>{donations.filter((d) => d.paymentStatus === 'failed').length}</h3>
               <p>Failed Transactions</p>
@@ -156,7 +156,7 @@ const SuperadminPanel = () => {
         </div>
         <div className="admin-stat-card mint">
           <div className="stat-content">
-            <div className="stat-icon"></div>
+            <FiCalendar className="stat-icon" />
             <div>
               <h3>{insights.length}</h3>
               <p>Active Days</p>

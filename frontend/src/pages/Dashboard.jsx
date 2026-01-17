@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
+import { FiCheckCircle, FiClock, FiXCircle, FiDollarSign, FiHeart, FiList } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { donationAPI } from '../services/api';
 
@@ -79,6 +79,7 @@ const Dashboard = () => {
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon purple">
+              <FiDollarSign />
             </div>
             <div className="stat-info">
               <h3>₹{stats.totalDonated.toLocaleString()}</h3>
@@ -87,6 +88,7 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <div className="stat-icon pink">
+              <FiHeart />
             </div>
             <div className="stat-info">
               <h3>{stats.successCount}</h3>
@@ -95,6 +97,7 @@ const Dashboard = () => {
           </div>
           <div className="stat-card">
             <div className="stat-icon mint">
+              <FiList />
             </div>
             <div className="stat-info">
               <h3>{stats.totalCount}</h3>
