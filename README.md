@@ -20,10 +20,6 @@ A full-stack web application for managing NGO member registration and donations.
 - Backend: Node.js, Express, Mongoose
 - Database: MongoDB
 
-## Prerequisites
-
-- Node.js 18+
-- MongoDB (local or Atlas)
 
 ## Installation
 
@@ -41,6 +37,7 @@ PORT=5000
 CONNECTION_URI=mongodb://localhost:27017/ngo_portal
 SECRET_KEY=your_jwt_secret
 CORS_ORIGIN=http://localhost:5173
+NODE_ENV=development
 SUPERADMIN_EMAIL=superadmin@example.com
 SUPERADMIN_PASSWORD=SuperAdmin123!
 ```
@@ -154,7 +151,4 @@ frontend/
 
 ## Project Report
 
-See `docs/PROJECT_REPORT.txt` for detailed system architecture, database schema, flow diagrams, and design decisions.
-
-
-
+See `Project_Report.txt` for detailed system architecture, database schema, flow diagrams, and design decisions.

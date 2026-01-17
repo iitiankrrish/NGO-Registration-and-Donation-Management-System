@@ -78,10 +78,11 @@ exports.handleLogin = async (req, res) => {
                 { expiresIn: '5h' }
             );
 
+            const isProduction = process.env.NODE_ENV === 'production';
             res.cookie('token_node', token, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: isProduction, // Must be true for sameSite: 'none'
+                sameSite: isProduction ? 'none' : 'lax', // 'none' allows cross-origin
                 maxAge: 5 * 60 * 60 * 1000,
             });
 
@@ -113,7 +114,12 @@ exports.handleLogin = async (req, res) => {
 };
 
 exports.handleLogout = (req, res) => {
-    res.clearCookie('token_node');
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.clearCookie('token_node', {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+    });
 
     console.info('[LOGOUT] Session terminated');
 
